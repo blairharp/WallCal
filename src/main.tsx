@@ -1,24 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import styles from './index.css?inline'
 import App from './App'
 import { useHAStore } from './store/haStore'
 import { Connection, HassEntities } from 'home-assistant-js-websocket'
 import { setHassAuth } from './utils/hassAuth'
 
 function injectCSS() {
-  if (document.querySelector('[data-wallcal-css]')) {
-    console.log('[WallCal] CSS already present, skipping inject')
+  if (document.querySelector('[data-wallcal-style]')) {
     return
   }
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = '/local/wallcal/index.css'
-  link.setAttribute('data-wallcal-css', '')
-  link.onload = () => console.log('[WallCal] CSS loaded OK')
-  link.onerror = () => console.error('[WallCal] CSS FAILED to load — check /local/wallcal/index.css exists')
-  document.head.appendChild(link)
-  console.log('[WallCal] CSS link injected')
+  const style = document.createElement('style')
+  style.setAttribute('data-wallcal-style', '')
+  style.textContent = styles
+  document.head.appendChild(style)
+  console.log('[WallCal] CSS injected')
 }
 
 class WallCalPanel extends HTMLElement {
