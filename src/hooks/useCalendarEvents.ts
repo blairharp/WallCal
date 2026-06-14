@@ -5,6 +5,25 @@ import { useCalendarStore } from '../store/calendarStore'
 import { getCalendarColor } from '../utils/calendarColors'
 import { CalendarEvent } from '../types/calendar'
 
+// HA 2023.4+ returns { "calendar.entity_id": { events: [...] } }
+// Older format was { events: [...] } directly
+type HACalendarResponse =
+  | Record<string, { events: RawHAEvent[] }>   // new format
+  | { events: RawHAEvent[] }                   // old format
+
+function extractEvents(result: HACalendarResponse, entityId: string): RawHAEvent[] {
+  // New format: keyed by entity_id
+  if (entityId in result) {
+    return (result as Record<string, { events: RawHAEvent[] }>)[entityId]?.events ?? []
+  }
+  // Old format: flat { events: [] }
+  if ('events' in result) {
+    return (result as { events: RawHAEvent[] }).events ?? []
+  }
+  console.warn('[WallCal] Unexpected calendar response format:', result)
+  return []
+}
+
 export function useCalendarEvents(currentMonth: Date) {
   const connection = useHAStore(s => s.connection)
   const entities = useHAStore(s => s.entities)
@@ -29,11 +48,12 @@ export function useCalendarEvents(currentMonth: Date) {
           entity_id: entityId,
           start_date_time: formatISO(start),
           end_date_time: formatISO(end),
-        }) as { events: RawHAEvent[] }
+        }) as HACalendarResponse
 
+        const rawEvents = extractEvents(result, entityId)
         const color = getCalendarColor(entityId)
 
-        const normalized: CalendarEvent[] = result.events.map((e, i) => ({
+        const normalized: CalendarEvent[] = rawEvents.map((e, i) => ({
           id: `${entityId}-${e.start?.dateTime || e.start?.date}-${e.summary || ''}-${i}`,
           title: e.summary || 'Untitled',
           start: new Date(e.start?.dateTime || e.start?.date || ''),
@@ -46,8 +66,10 @@ export function useCalendarEvents(currentMonth: Date) {
         }))
 
         allEvents.push(...normalized)
+        console.log(`[WallCal] Fetched ${normalized.length} events from ${entityId}`)
       } catch (err) {
-        console.warn(`[WallCal] Failed to fetch events for ${entityId}:`, err)
+        const e = err as { code?: string; message?: string }
+        console.warn(`[WallCal] Failed to fetch ${entityId}: [${e?.code}] ${e?.message}`, err)
       }
     }
 
