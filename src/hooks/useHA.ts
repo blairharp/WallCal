@@ -3,44 +3,35 @@ import {
   createConnection,
   createLongLivedTokenAuth,
   subscribeEntities,
-  Connection,
   HassEntities,
 } from 'home-assistant-js-websocket'
 import { useHAStore } from '../store/haStore'
-
-declare global {
-  interface Window {
-    hassConnection?: Promise<Connection>
-  }
-}
 
 export function useHA() {
   const { setConnection, setEntities, setConnected } = useHAStore()
 
   useEffect(() => {
+    // When running as an HA panel, the hass property setter in main.tsx
+    // provides the connection and entities — no need to connect here.
+    if ((window as any).__wallcalHAPanel) return
+
+    // Dev mode: connect via long-lived access token
     async function connect() {
       try {
-        let conn: Connection
-
-        if (window.hassConnection) {
-          conn = await window.hassConnection
-        } else {
-          const auth = createLongLivedTokenAuth(
-            import.meta.env.VITE_HA_URL || 'http://homeassistant.local:8123',
-            import.meta.env.VITE_HA_TOKEN || ''
-          )
-          conn = await createConnection({ auth })
-        }
-
+        const auth = createLongLivedTokenAuth(
+          import.meta.env.VITE_HA_URL || 'http://homeassistant.local:8123',
+          import.meta.env.VITE_HA_TOKEN || ''
+        )
+        const conn = await createConnection({ auth })
         setConnection(conn)
         setConnected(true)
-        console.log('[WallCal] connected')
+        console.log('[WallCal] dev mode connected')
 
         subscribeEntities(conn, (entities: HassEntities) => {
           setEntities(entities)
         })
       } catch (err) {
-        console.error('[WallCal] Connection failed:', err)
+        console.error('[WallCal] dev connection failed:', err)
         setConnected(false)
       }
     }
