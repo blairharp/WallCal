@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { addMonths, subMonths, addWeeks, subWeeks } from 'date-fns'
-import { ChevronLeft, ChevronRight, Grid3x3, Columns, Calendar } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Grid3x3, Columns, Calendar, Plus } from 'lucide-react'
 import { useDrag } from '@use-gesture/react'
 import { MonthGrid } from '../calendar/MonthGrid'
 import { WeekStrip } from '../calendar/WeekStrip'
 import { DayView } from '../calendar/DayView'
 import { EventDetail } from '../calendar/EventDetail'
+import { CreateEventModal } from '../calendar/CreateEventModal'
 import { formatMonthYear, formatFullDate } from '../../utils/dateHelpers'
 import { useCalendarStore } from '../../store/calendarStore'
 
@@ -26,6 +27,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
   const [navDir, setNavDir] = useState<NavDir>(null)
   const [calendarKey, setCalendarKey] = useState(0)
   const [dragX, setDragX] = useState(0)
+  const [creating, setCreating] = useState(false)
   const selectedEvent = useCalendarStore(s => s.selectedEvent)
 
   function navigate(dir: 'prev' | 'next') {
@@ -109,6 +111,15 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
 
         <h2 className="flex-1 text-lg font-semibold text-slate-100 ml-1">{title}</h2>
 
+        {/* Add event */}
+        <button
+          onClick={() => setCreating(true)}
+          className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+          title="New event"
+        >
+          <Plus className="w-5 h-5" />
+        </button>
+
         {/* View toggles */}
         <div className="flex bg-slate-800 rounded-lg p-0.5 gap-0.5">
           {([
@@ -149,6 +160,12 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
       </div>
 
       {selectedEvent && <EventDetail />}
+      {creating && (
+        <CreateEventModal
+          initialDate={view === 'day' ? dayDate : view === 'week' ? weekDate : currentMonth}
+          onClose={() => setCreating(false)}
+        />
+      )}
     </div>
   )
 }

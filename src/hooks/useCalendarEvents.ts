@@ -8,7 +8,7 @@ import { CalendarEvent } from '../types/calendar'
 export function useCalendarEvents(currentMonth: Date) {
   const connection = useHAStore(s => s.connection)
   const entities = useHAStore(s => s.entities)
-  const { setEvents } = useCalendarStore()
+  const { setEvents, refreshToken } = useCalendarStore()
 
   const calendarEntityIds = Object.keys(entities).filter(id =>
     id.startsWith('calendar.')
@@ -53,7 +53,7 @@ export function useCalendarEvents(currentMonth: Date) {
 
     setEvents(allEvents)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, calendarEntityIds.join(','), currentMonth.getMonth(), currentMonth.getFullYear()])
+  }, [connection, calendarEntityIds.join(','), currentMonth.getMonth(), currentMonth.getFullYear(), refreshToken])
 
   useEffect(() => {
     fetchEvents()
