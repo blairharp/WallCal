@@ -21,7 +21,7 @@ export function CalendarLayout() {
 
   return (
     <>
-      <div className="flex h-screen w-screen bg-gray-950 text-white overflow-hidden font-sans">
+      <div className="flex h-full w-full bg-gray-950 text-white overflow-hidden font-sans">
         <aside className="w-72 flex-shrink-0 border-r border-slate-800 flex flex-col">
           <LeftPanel />
         </aside>
