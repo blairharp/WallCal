@@ -1,28 +1,10 @@
 import { useEffect, useCallback } from 'react'
-import { startOfMonth, endOfMonth, addMonths, subMonths, formatISO } from 'date-fns'
+import { startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns'
 import { useHAStore } from '../store/haStore'
 import { useCalendarStore } from '../store/calendarStore'
 import { getCalendarColor } from '../utils/calendarColors'
+import { getAccessToken } from '../utils/hassAuth'
 import { CalendarEvent } from '../types/calendar'
-
-// HA 2023.4+ returns { "calendar.entity_id": { events: [...] } }
-// Older format was { events: [...] } directly
-type HACalendarResponse =
-  | Record<string, { events: RawHAEvent[] }>   // new format
-  | { events: RawHAEvent[] }                   // old format
-
-function extractEvents(result: HACalendarResponse, entityId: string): RawHAEvent[] {
-  // New format: keyed by entity_id
-  if (entityId in result) {
-    return (result as Record<string, { events: RawHAEvent[] }>)[entityId]?.events ?? []
-  }
-  // Old format: flat { events: [] }
-  if ('events' in result) {
-    return (result as { events: RawHAEvent[] }).events ?? []
-  }
-  console.warn('[WallCal] Unexpected calendar response format:', result)
-  return []
-}
 
 export function useCalendarEvents(currentMonth: Date) {
   const connection = useHAStore(s => s.connection)
@@ -36,21 +18,32 @@ export function useCalendarEvents(currentMonth: Date) {
   const fetchEvents = useCallback(async () => {
     if (!connection || calendarEntityIds.length === 0) return
 
+    const token = await getAccessToken()
+    if (!token) {
+      console.warn('[WallCal] No access token available yet, skipping fetch')
+      return
+    }
+
     const start = startOfMonth(subMonths(currentMonth, 1))
     const end = endOfMonth(addMonths(currentMonth, 1))
+    const startISO = start.toISOString()
+    const endISO = end.toISOString()
 
     const allEvents: CalendarEvent[] = []
 
     for (const entityId of calendarEntityIds) {
       try {
-        const result = await connection.sendMessagePromise({
-          type: 'calendar/get_events',
-          entity_id: entityId,
-          start_date_time: formatISO(start),
-          end_date_time: formatISO(end),
-        }) as HACalendarResponse
+        const response = await fetch(
+          `/api/calendars/${entityId}?start=${startISO}&end=${endISO}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
 
-        const rawEvents = extractEvents(result, entityId)
+        if (!response.ok) {
+          console.warn(`[WallCal] HTTP ${response.status} fetching ${entityId}`)
+          continue
+        }
+
+        const rawEvents: RawHAEvent[] = await response.json()
         const color = getCalendarColor(entityId)
 
         const normalized: CalendarEvent[] = rawEvents.map((e, i) => ({
@@ -68,8 +61,7 @@ export function useCalendarEvents(currentMonth: Date) {
         allEvents.push(...normalized)
         console.log(`[WallCal] Fetched ${normalized.length} events from ${entityId}`)
       } catch (err) {
-        const e = err as { code?: string; message?: string }
-        console.warn(`[WallCal] Failed to fetch ${entityId}: [${e?.code}] ${e?.message}`, err)
+        console.warn(`[WallCal] Failed to fetch ${entityId}:`, err)
       }
     }
 

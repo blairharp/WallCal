@@ -4,6 +4,7 @@ import './index.css'
 import App from './App'
 import { useHAStore } from './store/haStore'
 import { Connection, HassEntities } from 'home-assistant-js-websocket'
+import { setHassAuth } from './utils/hassAuth'
 
 function injectCSS() {
   if (document.querySelector('[data-wallcal-css]')) {
@@ -23,7 +24,7 @@ function injectCSS() {
 class WallCalPanel extends HTMLElement {
   private _root: ReturnType<typeof createRoot> | null = null
 
-  set hass(value: { connection: Connection; states: HassEntities } | undefined) {
+  set hass(value: { connection: Connection; states: HassEntities; auth?: { getValidToken: () => Promise<string> } } | undefined) {
     if (!value) return
     const store = useHAStore.getState()
 
@@ -31,6 +32,11 @@ class WallCalPanel extends HTMLElement {
       store.setConnection(value.connection)
       store.setConnected(true)
       console.log('[WallCal] connected via hass.connection')
+    }
+
+    // Store auth so useCalendarEvents can get a valid token for REST calls
+    if (value.auth) {
+      setHassAuth(value.auth)
     }
 
     if (value.states) {
