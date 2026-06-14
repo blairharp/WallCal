@@ -6,7 +6,7 @@ import { RightPanel } from './RightPanel'
 import { Screensaver } from '../screensaver/Screensaver'
 import { useCallback } from 'react'
 
-const IDLE_TIMEOUT_MS = 5 * 60 * 1000 // 5 minutes
+const IDLE_TIMEOUT_MS = 5 * 60 * 1000
 
 export function CalendarLayout() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
@@ -21,8 +21,8 @@ export function CalendarLayout() {
 
   return (
     <>
-      <div className="flex h-full w-full bg-gray-950 text-white overflow-hidden font-sans">
-        <aside className="w-72 flex-shrink-0 border-r border-slate-800 flex flex-col">
+      <div className="flex h-full w-full bg-slate-50 dark:bg-gray-950 text-slate-800 dark:text-slate-100 overflow-hidden font-sans">
+        <aside className="hidden md:flex w-56 lg:w-64 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 flex-col bg-white dark:bg-gray-950">
           <LeftPanel />
         </aside>
         <main className="flex-1 flex flex-col overflow-hidden">
