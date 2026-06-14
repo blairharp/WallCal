@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/local/family-calendar/',
+  base: '/local/wallcal/',
   build: {
     outDir: 'dist',
     rollupOptions: {

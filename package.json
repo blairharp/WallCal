@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && rsync -avz dist/ ha:/config/www/family-calendar/"
+    "deploy": "npm run build && rsync -avz dist/ ha:/config/www/wallcal/"
   },
   "dependencies": {
     "react": "^18.3.0",
