@@ -24,7 +24,7 @@ function injectCSS() {
 class WallCalPanel extends HTMLElement {
   private _root: ReturnType<typeof createRoot> | null = null
 
-  set hass(value: { connection: Connection; states: HassEntities; auth?: { getValidToken: () => Promise<string> } } | undefined) {
+  set hass(value: { connection: Connection; states: HassEntities; auth?: unknown } | undefined) {
     if (!value) return
     const store = useHAStore.getState()
 
@@ -32,9 +32,12 @@ class WallCalPanel extends HTMLElement {
       store.setConnection(value.connection)
       store.setConnected(true)
       console.log('[WallCal] connected via hass.connection')
+      // connection.options.auth is the proper Auth class instance with getValidToken()
+      const connAuth = (value.connection as any).options?.auth
+      if (connAuth) setHassAuth(connAuth)
     }
 
-    // Store auth so useCalendarEvents can get a valid token for REST calls
+    // hass.auth may override with a fresher token (but might be a plain data object)
     if (value.auth) {
       setHassAuth(value.auth)
     }
