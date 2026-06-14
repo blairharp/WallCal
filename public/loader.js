@@ -3,4 +3,4 @@
 // and set module_url to /local/wallcal/loader.js — you never need to touch
 // configuration.yaml again after that.
 const base = new URL('.', import.meta.url).href
-await import(base + 'main.js?_t=' + Date.now())
+import(base + 'main.js?_t=' + Date.now())
