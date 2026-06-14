@@ -21,11 +21,20 @@ export function CalendarLayout() {
 
   return (
     <>
-      <div className="flex h-screen w-screen bg-gray-950 text-white overflow-hidden font-sans" style={{ minHeight: '100vh', background: '#0f172a', color: '#f8fafc' }}>
-        <aside className="w-72 flex-shrink-0 border-r border-slate-800 flex flex-col">
+      <div
+        className="flex h-screen w-screen bg-gray-950 text-white overflow-hidden font-sans"
+        style={{ display: 'flex', flexDirection: 'row', height: '100vh', width: '100%', background: '#0f172a', color: '#f8fafc', overflow: 'hidden' }}
+      >
+        <aside
+          className="w-72 flex-shrink-0 border-r border-slate-800 flex flex-col"
+          style={{ width: '18rem', flexShrink: 0, borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
           <LeftPanel />
         </aside>
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main
+          className="flex-1 flex flex-col overflow-hidden"
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}
+        >
           <RightPanel
             currentMonth={currentMonth}
             onMonthChange={setCurrentMonth}

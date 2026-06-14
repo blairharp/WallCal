@@ -24,9 +24,9 @@ export function MonthGrid({ month }: MonthGridProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Day name header */}
-      <div className="grid grid-cols-7 border-b border-slate-800">
+      <div className="grid grid-cols-7 border-b border-slate-800" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #1e293b' }}>
         {DAY_NAMES.map(name => (
           <div key={name} className="py-2 text-center text-xs text-slate-500 font-medium uppercase tracking-wider">
             {name}
@@ -35,9 +35,9 @@ export function MonthGrid({ month }: MonthGridProps) {
       </div>
 
       {/* Weeks */}
-      <div className="flex-1 grid" style={{ gridTemplateRows: `repeat(${weeks.length}, 1fr)` }}>
+      <div className="flex-1 grid" style={{ flex: 1, display: 'grid', gridTemplateRows: `repeat(${weeks.length}, 1fr)`, minHeight: 0 }}>
         {weeks.map((week, wi) => (
-          <div key={wi} className="grid grid-cols-7 border-b border-slate-800 last:border-0">
+          <div key={wi} className="grid grid-cols-7 border-b border-slate-800 last:border-0" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #1e293b' }}>
             {week.map((day, di) => {
               const dayEvents = eventsForDay(day)
               const inMonth = isSameMonth(day, month)
@@ -49,6 +49,7 @@ export function MonthGrid({ month }: MonthGridProps) {
                   className={`border-r border-slate-800 last:border-0 p-1 min-h-0 flex flex-col ${
                     !inMonth ? 'opacity-30' : ''
                   }`}
+                  style={{ borderRight: '1px solid #1e293b', padding: '0.25rem', minHeight: 0, display: 'flex', flexDirection: 'column', opacity: !inMonth ? 0.3 : 1 }}
                 >
                   <div className="flex justify-center mb-0.5">
                     <span

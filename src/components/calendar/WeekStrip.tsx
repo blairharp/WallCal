@@ -23,13 +23,13 @@ export function WeekStrip({ week }: WeekStripProps) {
   }
 
   return (
-    <div className="grid grid-cols-7 h-full">
+    <div className="grid grid-cols-7 h-full" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', height: '100%' }}>
       {days.map((day, i) => {
         const dayEvents = eventsForDay(day)
         const today = isToday(day)
 
         return (
-          <div key={i} className="border-r border-slate-800 last:border-0 flex flex-col">
+          <div key={i} className="border-r border-slate-800 last:border-0 flex flex-col" style={{ borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column' }}>
             {/* Day header */}
             <div className="flex flex-col items-center py-3 border-b border-slate-800">
               <span className="text-xs text-slate-500 uppercase tracking-wider">
@@ -45,7 +45,7 @@ export function WeekStrip({ week }: WeekStripProps) {
             </div>
 
             {/* Events */}
-            <div className="flex-1 p-1 flex flex-col gap-1 overflow-y-auto">
+            <div className="flex-1 p-1 flex flex-col gap-1 overflow-y-auto" style={{ flex: 1, padding: '0.25rem', display: 'flex', flexDirection: 'column', gap: '0.25rem', overflowY: 'auto' }}>
               {dayEvents.map(event => (
                 <EventPill key={event.id} event={event} />
               ))}

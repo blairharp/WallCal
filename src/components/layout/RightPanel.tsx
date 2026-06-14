@@ -87,7 +87,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
     : 'animate-fade-in'
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Nav bar */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 flex-shrink-0">
         <button
@@ -148,11 +148,13 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
         {...bind()}
         className="flex-1 overflow-hidden touch-pan-y select-none"
         style={{
+          flex: 1,
+          overflow: 'hidden',
           transform: `translateX(${dragX}px)`,
           transition: dragX === 0 ? 'transform 0.18s ease' : 'none',
         }}
       >
-        <div key={calendarKey} className={`h-full ${animClass}`}>
+        <div key={calendarKey} className={`h-full ${animClass}`} style={{ height: '100%' }}>
           {view === 'month' && <MonthGrid month={currentMonth} />}
           {view === 'week'  && <WeekStrip week={weekDate} />}
           {view === 'day'   && <DayView day={dayDate} />}

@@ -5,15 +5,15 @@ import { UpcomingList } from '../widgets/UpcomingList'
 
 export function LeftPanel() {
   return (
-    <div className="flex flex-col h-full gap-2 py-2">
+    <div className="flex flex-col h-full gap-2 py-2" style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.5rem', padding: '0.5rem 0' }}>
       <ClockDate />
-      <div className="border-t border-slate-800 pt-2">
+      <div className="border-t border-slate-800 pt-2" style={{ borderTop: '1px solid #1e293b', paddingTop: '0.5rem' }}>
         <WeatherWidget />
       </div>
-      <div className="border-t border-slate-800 pt-2">
+      <div className="border-t border-slate-800 pt-2" style={{ borderTop: '1px solid #1e293b', paddingTop: '0.5rem' }}>
         <FamilyAvatars />
       </div>
-      <div className="border-t border-slate-800 pt-2 flex-1 overflow-hidden">
+      <div className="border-t border-slate-800 pt-2 flex-1 overflow-hidden" style={{ borderTop: '1px solid #1e293b', paddingTop: '0.5rem', flex: 1, overflow: 'hidden' }}>
         <UpcomingList />
       </div>
     </div>
