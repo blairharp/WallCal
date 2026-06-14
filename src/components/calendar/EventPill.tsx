@@ -13,8 +13,12 @@ export function EventPill({ event, compact = false }: EventPillProps) {
   return (
     <button
       onClick={(e) => { e.stopPropagation(); setSelectedEvent(event) }}
-      className="w-full text-left rounded px-1.5 py-0.5 text-xs font-medium truncate transition-opacity hover:opacity-90 active:opacity-75"
-      style={{ backgroundColor: event.color + '33', color: event.color, borderLeft: `3px solid ${event.color}` }}
+      className="w-full text-left rounded-md px-2 py-1 text-xs font-semibold truncate transition-opacity hover:opacity-90 active:opacity-75"
+      style={{
+        backgroundColor: event.color + '28',
+        color: event.color,
+        borderLeft: `3px solid ${event.color}`,
+      }}
       title={event.title}
     >
       {!compact && !event.allDay && (

@@ -5,6 +5,7 @@ export default {
     './index.html',
     './src/**/*.{ts,tsx}',
   ],
+  darkMode: 'media',
   theme: {
     extend: {
       fontFamily: {

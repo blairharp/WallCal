@@ -7,13 +7,13 @@ export function LeftPanel() {
   return (
     <div className="flex flex-col h-full gap-2 py-2">
       <ClockDate />
-      <div className="border-t border-slate-800 pt-2">
+      <div className="border-t border-slate-200 pt-2">
         <WeatherWidget />
       </div>
-      <div className="border-t border-slate-800 pt-2">
+      <div className="border-t border-slate-200 pt-2">
         <FamilyAvatars />
       </div>
-      <div className="border-t border-slate-800 pt-2 flex-1 overflow-hidden">
+      <div className="border-t border-slate-200 pt-2 flex-1 overflow-hidden">
         <UpcomingList />
       </div>
     </div>

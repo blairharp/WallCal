@@ -15,7 +15,7 @@ export function FamilyAvatars() {
 
   return (
     <div className="px-4 py-3">
-      <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Family</p>
+      <p className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold mb-2">Family</p>
       <div className="flex flex-col gap-2">
         {people.map((person) => (
           <div key={person.name} className="flex items-center gap-3">
@@ -24,22 +24,22 @@ export function FamilyAvatars() {
                 <img
                   src={person.picture}
                   alt={person.name}
-                  className="w-9 h-9 rounded-full object-cover border-2 border-slate-700"
+                  className="w-9 h-9 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700"
                 />
               ) : (
-                <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-medium text-sm">
+                <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-medium text-sm">
                   {person.name[0]?.toUpperCase()}
                 </div>
               )}
               <span
-                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-gray-950 ${
-                  person.state === 'home' ? 'bg-green-500' : 'bg-slate-600'
+                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-950 ${
+                  person.state === 'home' ? 'bg-green-500' : 'bg-slate-300 dark:bg-slate-600'
                 }`}
               />
             </div>
             <div>
-              <p className="text-sm text-slate-200 font-medium leading-tight">{person.name}</p>
-              <p className="text-xs text-slate-500 capitalize">{person.state.replace(/_/g, ' ')}</p>
+              <p className="text-sm text-slate-700 dark:text-slate-200 font-medium leading-tight">{person.name}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 capitalize">{person.state.replace(/_/g, ' ')}</p>
             </div>
           </div>
         ))}

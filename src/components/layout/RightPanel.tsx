@@ -61,7 +61,6 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
 
   const bind = useDrag(({ movement: [mx], last, active }) => {
     if (active) {
-      // Resist drag with a rubber-band feel past 120px
       const clamped = Math.max(-120, Math.min(120, mx))
       setDragX(clamped * (1 - Math.abs(clamped) / 300))
     }
@@ -89,27 +88,27 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Nav bar */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 flex-shrink-0">
+      <div className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2.5 md:py-3 border-b border-slate-200 dark:border-slate-800 flex-shrink-0 bg-white dark:bg-gray-950">
         <button
           onClick={navToday}
-          className="text-sm px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors"
+          className="text-sm px-2.5 md:px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors font-medium"
         >
           Today
         </button>
         <button
           onClick={() => navigate('prev')}
-          className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={() => navigate('next')}
-          className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        <h2 className="flex-1 text-lg font-semibold text-slate-100 ml-1">{title}</h2>
+        <h2 className="flex-1 text-base md:text-lg font-semibold text-slate-800 dark:text-slate-100 ml-1 truncate">{title}</h2>
 
         {/* Add event */}
         <button
@@ -121,7 +120,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
         </button>
 
         {/* View toggles */}
-        <div className="flex bg-slate-800 rounded-lg p-0.5 gap-0.5">
+        <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 gap-0.5">
           {([
             { mode: 'month' as ViewMode, icon: <Grid3x3 className="w-4 h-4" />, label: 'Month' },
             { mode: 'week'  as ViewMode, icon: <Columns  className="w-4 h-4" />, label: 'Week'  },
@@ -133,8 +132,8 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
               title={label}
               className={`p-1.5 rounded-md transition-colors ${
                 view === mode
-                  ? 'bg-slate-600 text-slate-100'
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm'
+                  : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
               }`}
             >
               {icon}
