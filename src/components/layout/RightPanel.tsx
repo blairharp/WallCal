@@ -89,7 +89,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
   return (
     <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Nav bar */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 flex-shrink-0">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 flex-shrink-0" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1rem', borderBottom: '1px solid #1e293b', flexShrink: 0 }}>
         <button
           onClick={navToday}
           className="text-sm px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors"
@@ -121,7 +121,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
         </button>
 
         {/* View toggles */}
-        <div className="flex bg-slate-800 rounded-lg p-0.5 gap-0.5">
+        <div className="flex bg-slate-800 rounded-lg p-0.5 gap-0.5" style={{ display: 'flex', background: '#1e293b', borderRadius: '0.5rem', padding: '0.125rem', gap: '0.125rem' }}>
           {([
             { mode: 'month' as ViewMode, icon: <Grid3x3 className="w-4 h-4" />, label: 'Month' },
             { mode: 'week'  as ViewMode, icon: <Columns  className="w-4 h-4" />, label: 'Week'  },
