@@ -8,7 +8,7 @@ export default function App() {
 
   if (!connected) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-950 text-white">
+      <div className="flex items-center justify-center h-full bg-gray-950 text-white">
         <div className="text-center">
           <div className="text-5xl mb-4">📅</div>
           <p className="text-xl text-slate-400">Connecting to Home Assistant…</p>
