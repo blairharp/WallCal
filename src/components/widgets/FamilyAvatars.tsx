@@ -1,12 +1,16 @@
 import { useHAStore } from '../../store/haStore'
+import { useSettingsStore } from '../../store/settingsStore'
 
 export function FamilyAvatars() {
   const entities = useHAStore(s => s.entities)
+  const hiddenPersons = useSettingsStore(s => s.hiddenPersons)
+  const personNames = useSettingsStore(s => s.personNames)
 
   const people = Object.entries(entities)
-    .filter(([id]) => id.startsWith('person.'))
-    .map(([, entity]) => ({
-      name: entity.attributes.friendly_name as string || entity.entity_id,
+    .filter(([id]) => id.startsWith('person.') && !hiddenPersons.includes(id))
+    .map(([id, entity]) => ({
+      entityId: id,
+      name: personNames[id] || (entity.attributes.friendly_name as string) || id,
       state: entity.state,
       picture: entity.attributes.entity_picture as string | undefined,
     }))
@@ -23,7 +27,7 @@ export function FamilyAvatars() {
       </p>
       <div className="flex flex-col gap-2" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {people.map((person) => (
-          <div key={person.name} className="flex items-center gap-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div key={person.entityId} className="flex items-center gap-3" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div className="relative" style={{ position: 'relative', flexShrink: 0 }}>
               {person.picture ? (
                 <img

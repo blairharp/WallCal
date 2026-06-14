@@ -27,3 +27,11 @@ export function getCalendarColor(entityId: string): string {
   autoIndex++
   return color
 }
+
+export function getCalendarColorWithOverride(
+  entityId: string,
+  overrides: Record<string, string>
+): string {
+  if (overrides[entityId]) return overrides[entityId]
+  return getCalendarColor(entityId)
+}

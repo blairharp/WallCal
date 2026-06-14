@@ -1,45 +1,52 @@
+import type { ReactNode } from 'react'
 import { useHAStore } from '../../store/haStore'
+import { useSettingsStore } from '../../store/settingsStore'
 import { Cloud, Sun, CloudRain, CloudSnow, CloudLightning, Wind, Droplets } from 'lucide-react'
 
-const CONDITION_ICONS: Record<string, React.ReactNode> = {
-  sunny:          <Sun className="w-8 h-8 text-yellow-400" />,
-  'clear-night':  <Sun className="w-8 h-8 text-slate-300" />,
-  cloudy:         <Cloud className="w-8 h-8 text-slate-400" />,
-  'partly-cloudy-day':   <Cloud className="w-8 h-8 text-slate-300" />,
-  'partly-cloudy-night': <Cloud className="w-8 h-8 text-slate-400" />,
-  rainy:          <CloudRain className="w-8 h-8 text-blue-400" />,
-  snowy:          <CloudSnow className="w-8 h-8 text-blue-200" />,
-  lightning:      <CloudLightning className="w-8 h-8 text-yellow-300" />,
-  windy:          <Wind className="w-8 h-8 text-slate-300" />,
+const ICON_STYLE = { width: '2rem', height: '2rem' }
+
+const CONDITION_ICONS: Record<string, ReactNode> = {
+  sunny:                 <Sun style={{ ...ICON_STYLE, color: '#facc15' }} />,
+  'clear-night':         <Sun style={{ ...ICON_STYLE, color: '#cbd5e1' }} />,
+  cloudy:                <Cloud style={{ ...ICON_STYLE, color: '#94a3b8' }} />,
+  'partly-cloudy-day':   <Cloud style={{ ...ICON_STYLE, color: '#cbd5e1' }} />,
+  'partly-cloudy-night': <Cloud style={{ ...ICON_STYLE, color: '#94a3b8' }} />,
+  rainy:                 <CloudRain style={{ ...ICON_STYLE, color: '#60a5fa' }} />,
+  snowy:                 <CloudSnow style={{ ...ICON_STYLE, color: '#bfdbfe' }} />,
+  lightning:             <CloudLightning style={{ ...ICON_STYLE, color: '#fde047' }} />,
+  windy:                 <Wind style={{ ...ICON_STYLE, color: '#cbd5e1' }} />,
 }
 
 export function WeatherWidget() {
   const entities = useHAStore(s => s.entities)
-  const weather = entities['weather.home']
+  const weatherEntity = useSettingsStore(s => s.weatherEntity)
+  const weather = entities[weatherEntity]
 
   if (!weather) return null
 
   const temp = weather.attributes.temperature as number | undefined
   const condition = weather.state
   const humidity = weather.attributes.humidity as number | undefined
-  const icon = CONDITION_ICONS[condition] ?? <Cloud className="w-8 h-8 text-slate-400" />
+  const icon = CONDITION_ICONS[condition] ?? <Cloud style={{ ...ICON_STYLE, color: '#94a3b8' }} />
 
   return (
-    <div className="px-4 py-3 rounded-xl bg-slate-800 mx-4">
-      <div className="flex items-center gap-3">
+    <div style={{ padding: '0.75rem 1rem', borderRadius: '0.75rem', background: '#1e293b', margin: '0 1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         {icon}
-        <div className="flex-1">
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-light text-slate-50">
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
+            <span style={{ fontSize: '1.875rem', fontWeight: 300, color: '#f8fafc' }}>
               {temp !== undefined ? Math.round(temp) : '--'}°
             </span>
           </div>
-          <p className="text-sm text-slate-400 capitalize">{condition.replace(/-/g, ' ')}</p>
+          <p style={{ fontSize: '0.875rem', color: '#94a3b8', textTransform: 'capitalize', margin: 0 }}>
+            {condition.replace(/-/g, ' ')}
+          </p>
         </div>
         {humidity !== undefined && (
-          <div className="flex items-center gap-1 text-slate-400">
-            <Droplets className="w-4 h-4" />
-            <span className="text-sm">{humidity}%</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#94a3b8' }}>
+            <Droplets style={{ width: '1rem', height: '1rem' }} />
+            <span style={{ fontSize: '0.875rem' }}>{humidity}%</span>
           </div>
         )}
       </div>

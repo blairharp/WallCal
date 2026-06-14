@@ -2,7 +2,8 @@ import { useEffect, useCallback } from 'react'
 import { startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns'
 import { useHAStore } from '../store/haStore'
 import { useCalendarStore } from '../store/calendarStore'
-import { getCalendarColor } from '../utils/calendarColors'
+import { useSettingsStore } from '../store/settingsStore'
+import { getCalendarColorWithOverride } from '../utils/calendarColors'
 import { getAccessToken } from '../utils/hassAuth'
 import { CalendarEvent } from '../types/calendar'
 
@@ -10,6 +11,7 @@ export function useCalendarEvents(currentMonth: Date) {
   const connection = useHAStore(s => s.connection)
   const entities = useHAStore(s => s.entities)
   const { setEvents, refreshToken } = useCalendarStore()
+  const settingsCalendarColors = useSettingsStore(s => s.calendarColors)
 
   const calendarEntityIds = Object.keys(entities).filter(id =>
     id.startsWith('calendar.')
@@ -44,7 +46,7 @@ export function useCalendarEvents(currentMonth: Date) {
         }
 
         const rawEvents: RawHAEvent[] = await response.json()
-        const color = getCalendarColor(entityId)
+        const color = getCalendarColorWithOverride(entityId, settingsCalendarColors)
 
         const normalized: CalendarEvent[] = rawEvents.map((e, i) => ({
           id: `${entityId}-${e.start?.dateTime || e.start?.date}-${e.summary || ''}-${i}`,
@@ -67,7 +69,7 @@ export function useCalendarEvents(currentMonth: Date) {
 
     setEvents(allEvents)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, calendarEntityIds.join(','), currentMonth.getMonth(), currentMonth.getFullYear(), refreshToken])
+  }, [connection, calendarEntityIds.join(','), currentMonth.getMonth(), currentMonth.getFullYear(), refreshToken, settingsCalendarColors])
 
   useEffect(() => {
     fetchEvents()

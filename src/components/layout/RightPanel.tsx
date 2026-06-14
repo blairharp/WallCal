@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { addMonths, subMonths, addWeeks, subWeeks } from 'date-fns'
-import { ChevronLeft, ChevronRight, Grid3x3, Columns, Calendar, Plus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Grid3x3, Columns, Calendar, Plus, Settings } from 'lucide-react'
 import { useDrag } from '@use-gesture/react'
 import { MonthGrid } from '../calendar/MonthGrid'
 import { WeekStrip } from '../calendar/WeekStrip'
 import { DayView } from '../calendar/DayView'
 import { EventDetail } from '../calendar/EventDetail'
 import { CreateEventModal } from '../calendar/CreateEventModal'
+import { SettingsModal } from '../settings/SettingsModal'
 import { formatMonthYear, formatFullDate } from '../../utils/dateHelpers'
 import { useCalendarStore } from '../../store/calendarStore'
 
@@ -28,6 +29,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
   const [calendarKey, setCalendarKey] = useState(0)
   const [dragX, setDragX] = useState(0)
   const [creating, setCreating] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const selectedEvent = useCalendarStore(s => s.selectedEvent)
 
   function navigate(dir: 'prev' | 'next') {
@@ -136,11 +138,34 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
                   ? 'bg-slate-600 text-slate-100'
                   : 'text-slate-500 hover:text-slate-300'
               }`}
+              style={view === mode
+                ? { padding: '0.375rem', borderRadius: '0.375rem', background: '#475569', color: '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+                : { padding: '0.375rem', borderRadius: '0.375rem', background: 'none', color: '#64748b', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+              }
             >
               {icon}
             </button>
           ))}
         </div>
+
+        {/* Settings */}
+        <button
+          onClick={() => setShowSettings(true)}
+          title="Settings"
+          style={{
+            padding: '0.375rem',
+            borderRadius: '0.5rem',
+            background: 'none',
+            border: 'none',
+            color: '#64748b',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Settings style={{ width: '1.25rem', height: '1.25rem' }} />
+        </button>
       </div>
 
       {/* Swipeable calendar area */}
@@ -168,6 +193,7 @@ export function RightPanel({ currentMonth, onMonthChange }: RightPanelProps) {
           onClose={() => setCreating(false)}
         />
       )}
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
   )
 }

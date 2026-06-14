@@ -10,17 +10,59 @@ interface EventPillProps {
 export function EventPill({ event, compact = false }: EventPillProps) {
   const setSelectedEvent = useCalendarStore(s => s.setSelectedEvent)
 
+  if (compact) {
+    return (
+      <button
+        onClick={(e) => { e.stopPropagation(); setSelectedEvent(event) }}
+        title={event.title}
+        style={{
+          width: '100%',
+          textAlign: 'left',
+          borderRadius: '4px',
+          padding: '1px 6px',
+          fontSize: '0.7rem',
+          fontWeight: 500,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          background: event.color + '30',
+          color: event.color,
+          borderLeft: `3px solid ${event.color}`,
+          cursor: 'pointer',
+          border: 'none',
+          display: 'block',
+        }}
+      >
+        {event.title}
+      </button>
+    )
+  }
+
   return (
     <button
       onClick={(e) => { e.stopPropagation(); setSelectedEvent(event) }}
-      className="w-full text-left rounded px-1.5 py-0.5 text-xs font-medium truncate transition-opacity hover:opacity-90 active:opacity-75"
-      style={{ backgroundColor: event.color + '33', color: event.color, borderLeft: `3px solid ${event.color}` }}
       title={event.title}
+      style={{
+        width: '100%',
+        textAlign: 'left',
+        borderRadius: '6px',
+        padding: '4px 8px',
+        background: event.color + '25',
+        borderLeft: `3px solid ${event.color}`,
+        cursor: 'pointer',
+        border: 'none',
+        overflow: 'hidden',
+        display: 'block',
+      }}
     >
-      {!compact && !event.allDay && (
-        <span className="mr-1 opacity-75">{formatEventTime(event.start)}</span>
+      {!event.allDay && (
+        <div style={{ fontSize: '0.65rem', color: event.color, fontWeight: 600, opacity: 0.9 }}>
+          {formatEventTime(event.start)}
+        </div>
       )}
-      {event.title}
+      <div style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {event.title}
+      </div>
     </button>
   )
 }
