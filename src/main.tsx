@@ -75,7 +75,9 @@ class WallCalPanel extends HTMLElement {
   }
 }
 
-customElements.define('wallcal-panel', WallCalPanel)
+if (!customElements.get('wallcal-panel')) {
+  customElements.define('wallcal-panel', WallCalPanel)
+}
 console.log('[WallCal] registered')
 
 // Local dev only: index.html provides <div id="root">
