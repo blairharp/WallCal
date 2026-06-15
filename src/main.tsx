@@ -1,9 +1,28 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+// Import the (Tailwind-processed) CSS as a string so we can inject it into the
+// element's own root node. HA mounts panels inside a shadow DOM, so a <style>
+// in document.head never reaches our app — it must live in the same root.
+import appCss from './index.css?inline'
 import App from './App'
 
+// Inject the stylesheet into the container's root node (a ShadowRoot when HA
+// mounts us in shadow DOM, otherwise document.head). A <style> applies to its
+// entire containing tree regardless of where it sits, so this covers both
+// shadow-DOM panel mode and standalone document mode.
+function injectStyles(container: HTMLElement) {
+  const rootNode = container.getRootNode()
+  const target: Node = rootNode instanceof ShadowRoot ? rootNode : document.head
+  const flag = '__wallcalStyled'
+  if ((target as unknown as Record<string, unknown>)[flag]) return
+  ;(target as unknown as Record<string, unknown>)[flag] = true
+  const style = document.createElement('style')
+  style.textContent = appCss
+  target.appendChild(style)
+}
+
 function mountApp(container: HTMLElement) {
+  injectStyles(container)
   createRoot(container).render(
     <StrictMode><App /></StrictMode>
   )

@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
 export default defineConfig({
-  // Inject the bundled CSS into main.js at runtime so styles load in HA panel
-  // (module_url) mode, where there is no index.html to <link> a separate
-  // stylesheet. Result: a single self-contained main.js.
-  plugins: [react(), cssInjectedByJsPlugin()],
+  // CSS is imported as a string (index.css?inline) and injected by main.tsx
+  // into the element's own root node, so styles work in HA panel mode even
+  // when the panel is mounted inside a shadow DOM. Result: a single
+  // self-contained main.js with no separate stylesheet.
+  plugins: [react()],
   base: '/local/wallcal/',
   build: {
     outDir: 'dist',
