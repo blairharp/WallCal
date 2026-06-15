@@ -10,12 +10,13 @@ import { useHAStore } from '../store/haStore'
 
 declare global {
   interface Window {
-    hassConnection?: Promise<{ conn: Connection; auth: unknown }>
+    // HA resolves to { conn, auth } in modern versions; older may resolve to Connection directly.
+    hassConnection?: Promise<{ conn: Connection; auth: unknown } | Connection>
   }
 }
 
 export function useHA() {
-  const { setConnection, setEntities, setConnected } = useHAStore()
+  const { setConnection, setEntities, setConnected, setConnectionError } = useHAStore()
 
   useEffect(() => {
     async function connect() {
@@ -23,7 +24,10 @@ export function useHA() {
         let conn: Connection
 
         if (window.hassConnection) {
-          conn = (await window.hassConnection).conn
+          const resolved = await window.hassConnection
+          // Handle both API shapes: { conn, auth } or bare Connection
+          conn = (resolved as { conn: Connection }).conn ?? (resolved as Connection)
+          console.log('[WallCal] hassConnection resolved, conn type:', typeof conn)
         } else {
           const auth = createLongLivedTokenAuth(
             import.meta.env.VITE_HA_URL || 'http://homeassistant.local:8123',
@@ -34,17 +38,20 @@ export function useHA() {
 
         setConnection(conn)
         setConnected(true)
+        setConnectionError(null)
         console.log('[WallCal] connected')
 
         subscribeEntities(conn, (entities: HassEntities) => {
           setEntities(entities)
         })
       } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
         console.error('[WallCal] Connection failed:', err)
         setConnected(false)
+        setConnectionError(msg)
       }
     }
 
     connect()
-  }, [setConnection, setEntities, setConnected])
+  }, [setConnection, setEntities, setConnected, setConnectionError])
 }
