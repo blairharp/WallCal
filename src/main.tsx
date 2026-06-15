@@ -30,6 +30,10 @@ if (standaloneRoot) {
     connectedCallback() {
       if (this.dataset.mounted) return
       this.dataset.mounted = '1'
+      // Make the custom element itself fill whatever space HA gives it.
+      // Without this, `h-full` inside React resolves to 0 and the flex
+      // layout collapses into a vertical stack.
+      this.style.cssText = 'display:block;width:100%;height:100%;'
       const root = document.createElement('div')
       root.style.cssText = 'width:100%;height:100%;overflow:hidden;'
       this.appendChild(root)
