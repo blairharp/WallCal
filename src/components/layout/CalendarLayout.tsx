@@ -21,7 +21,7 @@ export function CalendarLayout() {
 
   return (
     <>
-      <div className="flex h-full w-full bg-slate-50 dark:bg-gray-950 text-slate-800 dark:text-slate-100 overflow-hidden font-sans">
+      <div className="flex w-full bg-slate-50 dark:bg-gray-950 text-slate-800 dark:text-slate-100 overflow-hidden font-sans" style={{ height: 'calc(100dvh - var(--header-height, 0px))' }}>
         <aside className="hidden md:flex w-56 lg:w-64 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 flex-col bg-white dark:bg-gray-950">
           <LeftPanel />
         </aside>

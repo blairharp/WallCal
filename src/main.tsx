@@ -30,10 +30,15 @@ if (standaloneRoot) {
     connectedCallback() {
       if (this.dataset.mounted) return
       this.dataset.mounted = '1'
-      // Make the custom element itself fill whatever space HA gives it.
-      // Without this, `h-full` inside React resolves to 0 and the flex
-      // layout collapses into a vertical stack.
-      this.style.cssText = 'display:block;width:100%;height:100%;'
+      // height:100% alone doesn't reliably resolve when the HA panel
+      // container uses flex without an explicit height. Use the HA CSS
+      // custom property to compute the true available height instead.
+      this.style.cssText =
+        'display:block;width:100%;' +
+        'height:calc(100dvh - var(--header-height, 0px));' +
+        'overflow:hidden;'
+      console.log('[WallCal] element size after mount:',
+        this.offsetWidth, 'x', this.offsetHeight)
       const root = document.createElement('div')
       root.style.cssText = 'width:100%;height:100%;overflow:hidden;'
       this.appendChild(root)
