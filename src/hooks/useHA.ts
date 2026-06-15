@@ -10,7 +10,7 @@ import { useHAStore } from '../store/haStore'
 
 declare global {
   interface Window {
-    hassConnection?: Promise<Connection>
+    hassConnection?: Promise<{ conn: Connection; auth: unknown }>
   }
 }
 
@@ -23,7 +23,7 @@ export function useHA() {
         let conn: Connection
 
         if (window.hassConnection) {
-          conn = await window.hassConnection
+          conn = (await window.hassConnection).conn
         } else {
           const auth = createLongLivedTokenAuth(
             import.meta.env.VITE_HA_URL || 'http://homeassistant.local:8123',
